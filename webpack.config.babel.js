@@ -114,13 +114,7 @@ const server = {
   plugins: [
     ...common.plugins,
     new webpack.BannerPlugin({
-      banner: `
-      #!/usr/bin/env node
-      
-      if (process.env.ENV !== 'production') {
-        require('source-map-support').install();
-      }
-`.trim(),
+      banner: `#!/usr/bin/env node\nif (process.env.ENV !== 'production') {\n\trequire('source-map-support').install();\n}`,
       raw: true,
       entryOnly: false,
     }),
@@ -144,6 +138,7 @@ const server = {
   },
 
   externals: {  // What I want to avoid to do
+    'package.json'    : 'commonjs package.json',
     'yargs'    : 'commonjs yargs',
     'socket.io': 'commonjs socket.io',
     'express': 'commonjs express',
