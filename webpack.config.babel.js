@@ -135,6 +135,28 @@ const client = {
       // }),
     ] : []
   ],
+
+  module: {
+    ...common.module,
+    loaders: [
+      ...common.module.loaders,
+      {
+        test  : /\.css$/,
+        loader: 'style-loader!css-loader',
+      },
+      {
+        test  : /\.(png|jpg|jpeg|gif)$/,
+        loader: 'url-loader?limit=10000',
+      }, {
+        test  : /\.(wav|mp3|ogg)$/,
+        loader: 'url-loader?name=sounds/[name].[ext]',
+      }, {
+        test  : /\.(eot|ttf|svg|woff|woff2)$/,
+        loader: 'file-loader?name=../styles/fonts/[name].[ext]',
+      },
+    ],
+  },
+
 };
 
 const server = {
