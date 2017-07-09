@@ -24,11 +24,15 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   public componentDidMount() {
-    this.client.emit('nodes', (nodes) => {
+    // this.client.emit('nodes', (nodes) => {
       this.setState({
-        nodes,
+        nodes: [
+          {name: 'node1'},
+          {name: 'node2'},
+          {name: 'node3'},
+        ],
       })
-    });
+    // });
   }
 
   public render() {

@@ -27,11 +27,25 @@ export abstract class BaseCoreEvent<T> implements CoreEvent<T> {
   }
 
   public hasParent(event: CoreEvent<any>): CoreEvent<any> {
-    let parent = this.parent;
+    let parent: CoreEvent<any> = this;
 
     while (parent) {
       if (parent === event) {
         return this;
+      }
+
+      parent = parent.parent;
+    }
+
+    return null;
+  }
+
+  public lookup(type: string): CoreEvent<any> {
+    let parent: CoreEvent<any> = this;
+
+    while (parent) {
+      if (parent.type === type) {
+        return this.parent;
       }
 
       parent = parent.parent;

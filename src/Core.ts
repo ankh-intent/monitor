@@ -1,20 +1,21 @@
-
 import { OptionsResolver } from './OptionsResolver';
 
 import { Emitter } from './intent-utils/Emitter';
 import { Logger } from './intent-utils/Logger';
 
 import { CoreEventBus } from './core/flow/CoreEventBus';
-import { CoreEvent } from './core/flow/CoreEvent';
-import { FatalEvent } from './core/flow/events/FatalEvent';
+import { CoreEvent, CoreEventConsumer } from './core/flow/CoreEvent';
 
 import { StatConsumer } from './core/flow/consumers/stat/StatConsumer';
 import { ErrorConsumer } from './core/flow/consumers/ErrorConsumer';
-import { EventChainMonitor } from './core/flow/consumers/EventChainMonitor';
+import { EventChainMonitor, EventChainMonitoringData } from './core/flow/consumers/EventChainMonitor';
 import { IntentLogger } from './core/IntentLogger';
-import { DependencyManager } from './core/dependencies/DependencyManager';
-import { IntentServer } from './IntentServer';
 import { ServerOptions } from './core/ServerOptions';
+import { ServerConsumer } from './core/flow/consumers/server/ServerConsumer';
+import { ReadyEvent } from './core/flow/events/ReadyEvent';
+import { StartedEvent } from './core/flow/events/StartedEvent';
+import { StoppedEvent } from './core/flow/events/StoppedEvent';
+import { EmitterConsumer } from './core/flow/consumers/EmitterConsumer';
 
 export interface EmitOptions {
   stats: boolean
@@ -27,81 +28,64 @@ export interface CoreOptions {
 }
 
 export class Core extends Emitter<(event: CoreEvent<any>) => any> {
+  public logger: Logger;
+
   private options: OptionsResolver;
   private events: CoreEventBus;
-
-  private eventChainMonitor: EventChainMonitor<CoreEvent<any>>;
-  private dependencyTree: DependencyManager;
-
-  public logger: Logger;
-  private server: IntentServer;
+  private monitor: EventChainMonitor<CoreEvent<any>>;
 
   public constructor() {
     super();
     this.logger = new IntentLogger();
-    this.options= new OptionsResolver();
+    this.options = new OptionsResolver();
     this.events = new CoreEventBus();
+    this.monitor = new EventChainMonitor(this.events);
   }
 
   public bootstrap(options: CoreOptions): CoreOptions {
-    this.eventChainMonitor = new EventChainMonitor(this.events);
-    this.dependencyTree = new DependencyManager();
     let resolved = this.options.resolve(options);
 
-    if (resolved.server) {
-      this.server = new IntentServer(this.dependencyTree, resolved.server);
-    }
-
     this.events
-      .add(this.eventChainMonitor)
+      .add(this.monitor)
+      .add(this.configureCommandChain(this.events, resolved))
       .add(new ErrorConsumer(this.events, this.logger))
       .add(new StatConsumer(this.events, resolved, this.logger))
-      .add(this.eventChainMonitor)
+      .add(this.monitor)
+      .add(new EmitterConsumer(this.events, this))
     ;
 
     return resolved;
   }
 
   public start(options: CoreOptions): this {
-    if (this.server) {
-      this.server.on(IntentServer.READY, () => {
-        this.events.stat({
-          type: 'ready',
-        })
-      });
-      this.server.start();
-    }
+    let event = this.initiated(options);
 
-    // this.eventChainMonitor
-    //   .monitor(updates)
-    //   .once((data: EventChainMonitoringData) => {
-    //     this.events.emit(new ReadyEvent(data))
-    //   })
-    // ;
-
-    this.events
-      .add({
-        consume: (event) => {
-          if (event instanceof FatalEvent) {
-            this.stop();
-          }
-
-          this.emit(event);
-        }
+    this.monitor
+      .monitor([event])
+      .once((data: EventChainMonitoringData) => {
+        this.events.emit(new ReadyEvent(data, event));
       })
     ;
 
-    // for (let update of updates) {
-    //   this.events.emit(update);
-    // }
-    //
+    this.events.emit(event);
+
     return this;
   }
 
+  protected configureCommandChain(bus: CoreEventBus, options: CoreOptions): CoreEventConsumer<any, any>[] {
+    return [
+      new ServerConsumer(bus, options.server, this.logger),
+    ];
+  }
+
+  protected initiated(options: CoreOptions): CoreEvent<any> {
+    return new StartedEvent({
+      options,
+    });
+  }
+
   public stop() {
-    if (this.server) {
-      this.server.stop();
-    }
+    this.events.emit(new StoppedEvent({}));
   }
 }
 

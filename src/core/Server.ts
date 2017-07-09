@@ -10,6 +10,7 @@ import { ServerOptions } from './ServerOptions';
 
 export class Server<O extends ServerOptions> extends Eventable implements ClientHub {
   static READY = 'ready';
+  static SHUTDOWN = 'shutdown';
 
   protected app: any;
   private factory: ClientFactory;
