@@ -1,14 +1,18 @@
 
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import { NodeStoreInterface, Node } from '../stores/NodeStore';
-import { RoutedMatch, Match, Routed } from '../routing/Routed';
-import { NodesPageRoutes } from './NodesPage';
 import { Route, RouteComponentProps } from 'react-router';
 import { NavLink } from 'react-router-dom';
+import { RoutedMatch, Match, Routed } from '../routing/Routed';
+
+import { computed } from 'mobx';
+import { inject, observer } from 'mobx-react';
+
+import { NodeStoreInterface, Node } from '../stores/NodeStore';
+
+import { NodesPageRoutes } from './NodesPage';
 import { ListPageRoutes } from './ListPage';
 import { EditPageRoutes } from './EditPage';
-import { computed, observable } from 'mobx';
+import { Panel, PanelBody, PanelFooter, PanelHeader } from '../panel';
 
 interface ShowPageParams {
   node: string;
@@ -34,17 +38,26 @@ export class ShowPage extends React.Component<ShowPageProps & RouteComponentProp
   }
 
   public render() {
-    return (
-      <div>
-        <NavLink to={ ListPageRoutes.path() }>&larr; Back</NavLink>
-        Node: { JSON.stringify(this.node) }
+    return (this.node || null) && (
+      <Panel>
+        <PanelHeader>
+          Node: { this.node.identifier }
+        </PanelHeader>
 
-        <div>
-          <NavLink to={ EditPageRoutes.path(this.node) }>
-            Edit
-          </NavLink>
-        </div>
-      </div>
+        <PanelBody>
+          Node: { JSON.stringify(this.node) }
+
+          <div>
+            <NavLink to={ EditPageRoutes.path(this.node) }>
+              Edit
+            </NavLink>
+          </div>
+        </PanelBody>
+
+        <PanelFooter>
+          <NavLink to={ ListPageRoutes.path() }>&larr; Back</NavLink>
+        </PanelFooter>
+      </Panel>
     );
   }
 }

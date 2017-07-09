@@ -7,9 +7,7 @@ import { Redirect } from 'react-router';
 import { ListPageRoutes } from './ListPage';
 import { ShowPageRoutes } from './ShowPage';
 import { EditPageRoutes } from './EditPage';
-
-interface NodesPageParams {
-}
+import { Routed } from '../routing/Routed';
 
 interface NodesPageProps {
 }
@@ -18,17 +16,8 @@ interface NodesPageState {
 }
 
 @observer
+@Routed
 export class NodesPage extends React.Component<NodesPageProps, NodesPageState> {
-  componentWillReceiveProps(next) {
-    this.setState({
-    });
-  }
-
-  componentWillMount() {
-    this.setState({
-    });
-  }
-
   public render() {
     let props = {};
 

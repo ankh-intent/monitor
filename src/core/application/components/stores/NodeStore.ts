@@ -3,7 +3,7 @@ import { action, computed, observable } from 'mobx';
 
 export interface NodeStoreInterface {
   all: Node[];
-  push(node: Node|Node[]): number;
+  push(node: Node|Node[]);
   find(node: string): Node;
 }
 
@@ -17,6 +17,7 @@ export class Node {
     }
   }
 
+  @computed
   public get identifier(): string {
     return this._identifier;
   }
@@ -32,28 +33,28 @@ export class Node {
 
 export class NodeStore implements NodeStoreInterface {
   @observable
-  private store: Node[];
-
-  public constructor() {
-    this.store = [];
-  }
+  private store = observable.map();
 
   @computed
   public get all(): Node[] {
-    return this.store;
+    return <any>this.store.values();
   }
 
   @action('nodes push')
-  public push(node: Node|Node[]): number {
-    if (node instanceof Array) {
-      this.store = this.store.concat(node);
+  public push(nodes: Node|Node[]) {
+    console.log('pushing');
+    if (nodes instanceof Array) {
+      for (let node of nodes) {
+        this.store.set(node.identifier, node);
+      }
     } else {
-      return this.store.push(node);
+      this.store.set(nodes.identifier, nodes);
     }
   }
 
   @action('nodes find')
   public find(identifier: string): Node {
-    return this.store.find((e) => e.identifier === identifier);
+    console.log('finding');
+    return <Node>this.store.get(identifier);
   }
 }

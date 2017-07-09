@@ -2,13 +2,13 @@
 import * as React from 'react';
 import * as io from 'socket.io-client';
 import { HashRouter as Router } from 'react-router-dom';
-import { Provider } from 'mobx-react';
+import { observer, Provider } from 'mobx-react';
 import { RouteComponentProps, Switch } from 'react-router';
 
 import { NodesPageRoutes } from './nodes/NodesPage';
 import { LocationProps, Menu, Navbar } from './NavBar';
 import { NodeStore, Node, NodeStoreInterface } from './stores/NodeStore';
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 
 export class AppRouter extends React.Component<{}, {}> {
   public render() {
@@ -18,7 +18,6 @@ export class AppRouter extends React.Component<{}, {}> {
           <Switch>
             { NodesPageRoutes.routes() }
           </Switch>
-
         </App>
       </Router>
     );
@@ -32,11 +31,14 @@ export class App extends React.Component<{}, {}> {
     nodes: NodeStoreInterface,
   };
 
+  @observable
+  private nodes: NodeStoreInterface = new NodeStore();
+
   public constructor(props: any) {
     super(props);
 
     this.stores = {
-      nodes: new NodeStore(),
+      nodes: this.nodes,
     };
 
     this.client = io();
@@ -53,6 +55,12 @@ export class App extends React.Component<{}, {}> {
       ])
         .map((data) => new Node(data))
     );
+
+    setTimeout(() => {
+      this.stores.nodes.push(new Node({
+        identifier: 'node4',
+      }));
+    }, 1000);
     // });
   }
 
@@ -88,7 +96,7 @@ export class App extends React.Component<{}, {}> {
             <div className="col-lg-12">
               { React.Children.map(
                 this.props.children,
-                (child) => React.cloneElement(child as any, this.props)
+                (child) => React.cloneElement(child as any, childrenProps)
               ) }
             </div>
           </div>
