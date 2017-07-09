@@ -174,7 +174,7 @@ const server = {
   },
 
   node: {
-    __dirname: true,
+    __dirname: false,
   },
   externals: {  // What I want to avoid to do
     'package.json'    : 'commonjs package.json',
