@@ -6,6 +6,8 @@
     "jsx": "react",
     "sourceMap": true,
     "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
     "lib": [
       "dom",

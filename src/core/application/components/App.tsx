@@ -1,23 +1,59 @@
 
 import * as React from 'react';
 import * as io from 'socket.io-client';
+import { HashRouter, Route } from 'react-router-dom';
+import { observable } from 'mobx';
+import { Provider } from 'mobx-react';
+import { RouteComponentProps } from 'react-router';
 
-export interface AppProps {
+import { NodesPageRoutes } from './nodes/NodesPage';
+import { LocationProps, Menu, Navbar } from './NavBar';
+import { NodeStoreInterface } from './nodes/ListPage';
 
+export class AppRouter extends React.Component<{}, {}> {
+  public render() {
+    return (
+      <HashRouter>
+        <Route component={ App }>
+          { NodesPageRoutes }
+        </Route>
+      </HashRouter>
+    );
+  }
 }
 
-export interface AppState {
-  nodes: any[];
+class Node {
+  @observable data = observable.map();
+
+  constructor(data = {}) {
+    this.data.merge(data);
+  }
 }
 
-export class App extends React.Component<AppProps, AppState> {
+class Nodes implements NodeStoreInterface {
+  @observable
+  private store: any[] = [];
+
+  public all(): any[] {
+    return this.store;
+  }
+
+  public push(node: any): number {
+    return this.store.push(node);
+  }
+}
+
+export class App extends React.Component<RouteComponentProps<any>, {}> {
   private client: any;
+  private stores: {
+    nodes: Nodes,
+  };
 
-  public constructor(props: AppProps) {
+  public constructor(props: any) {
     super(props);
 
-    this.state = {
-      nodes: [],
+    this.stores = {
+      nodes: new Nodes(),
     };
 
     this.client = io();
@@ -25,28 +61,59 @@ export class App extends React.Component<AppProps, AppState> {
 
   public componentDidMount() {
     // this.client.emit('nodes', (nodes) => {
-      this.setState({
-        nodes: [
-          {name: 'node1'},
-          {name: 'node2'},
-          {name: 'node3'},
-        ],
-      })
+
+    let nodes = [
+      {name: 'node1'},
+      {name: 'node2'},
+      {name: 'node3'},
+    ];
+
+    for (let node of nodes) {
+      this.stores.nodes.push(new Node(
+        node
+      ));
+    }
     // });
   }
 
+  protected menu(): Menu {
+    return {
+      title: 'Intent',
+      link: '/',
+      children: [
+        {
+          title: 'Nodes',
+          link: '/nodes',
+        }
+      ],
+    };
+  }
+
   public render() {
-    let { nodes } = this.state;
+    let navProps: LocationProps = {
+      ...this.props as RouteComponentProps<any>,
+      menu: this.menu(),
+    };
+
+    let childrenProps = {
+    };
 
     return (
-      <div>
-        <h3>Hello App!</h3>
-        <ul>
-          { nodes.map((node) => (
-            <li>{ JSON.stringify(node) }</li>
-          )) }
-        </ul>
-      </div>
+      <Provider {...this.stores}>
+        <div>
+          <Navbar {...navProps} />
+
+          {/*<Breadcrumbs crumbs={ this.breadcrumbs() } />*/}
+          <div>
+            <div className="col-lg-12">
+              { React.Children.map(
+                this.props.children,
+                (child) => React.cloneElement(child as any, childrenProps)
+              ) }
+            </div>
+          </div>
+        </div>
+      </Provider>
     );
   }
 }
