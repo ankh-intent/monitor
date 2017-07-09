@@ -2,14 +2,22 @@
 import { CoreEvent, CoreEventConsumer } from './CoreEvent';
 import { StatEvent } from './events/StatEvent';
 
-export class CoreEventBus {
-  private consumers: CoreEventConsumer<any, any>[] = [];
+export class CoreEventBus<T = any, E extends CoreEvent<T> = CoreEvent<T>, C extends CoreEventConsumer<T, E> = CoreEventConsumer<T, E>> {
+  private consumers: C[] = [];
 
-  public add(consumer: CoreEventConsumer<any, any>): this {
-    return this.consumers.push(consumer), this;
+  public add(consumer: C|C[]): this {
+    if (consumer instanceof Array) {
+      for (let c of consumer) {
+        this.add(c);
+      }
+    } else {
+      this.consumers.push(consumer);
+    }
+
+    return this;
   }
 
-  public off(consumer: CoreEventConsumer<any, any>): number {
+  public off(consumer: C): number {
     let index, n = 0;
 
     while ((index = this.consumers.indexOf(consumer)) >= 0) {
@@ -22,7 +30,11 @@ export class CoreEventBus {
 
   public emit(event: CoreEvent<any>): CoreEvent<any> {
     for (let consumer of this.consumers) {
-      let processed = consumer.consume(event);
+      if (!consumer.supports(event)) {
+        continue;
+      }
+
+      let processed = consumer.consume(<any>event);
 
       if (event === processed) {
         if (!event.bubble) {

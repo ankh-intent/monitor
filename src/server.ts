@@ -1,6 +1,7 @@
 
 import * as util from 'util';
 import config from './config';
+
 import { Logger } from './intent-utils/Logger';
 import { OptionsProvider } from './OptionsProvider';
 import { StatEvent } from './core/flow/events/StatEvent';

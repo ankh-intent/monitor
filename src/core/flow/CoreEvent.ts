@@ -49,6 +49,7 @@ export abstract class BaseCoreEvent<T> implements CoreEvent<T> {
 
 export interface CoreEventConsumer<T, E extends CoreEvent<T>> {
 
-  consume(event: E): CoreEvent<any>|void;
+  supports(event: CoreEvent<any>): boolean;
+  consume(event: E): CoreEvent<any> | void;
 
 }
