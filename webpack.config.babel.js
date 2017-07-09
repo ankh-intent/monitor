@@ -54,11 +54,15 @@ const common = {
 
   resolve: {
     modules   : ['src', SCRIPTS_ROOT, 'node_modules'],
-    extensions: ['.js', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
 
   module: {
     loaders: [
+      {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader"
+      },
       {
         test  : /\.json$/,
         loader: 'json-loader',
@@ -78,7 +82,7 @@ const client = {
   target: 'web',
 
   entry : {
-    index: path.join(SCRIPTS_ROOT, '/core/application/index.js'),
+    index: path.join(SCRIPTS_ROOT, '/core/application/index.tsx'),
   },
   output: {
     ...common.output,
@@ -135,13 +139,13 @@ const server = {
   target: 'node',
 
   entry  : {
-    server: path.join(SCRIPTS_ROOT, '/server.js'),
+    server: path.join(SCRIPTS_ROOT, '/server.ts'),
   },
   output : {
     ...common.output,
 
     path: path.join(SCRIPTS_ROOT, '/../bin'),
-    libraryTarget: 'commonjs2',
+    // libraryTarget: 'commonjs2',
   },
   plugins: [
     ...common.plugins,
@@ -153,6 +157,14 @@ const server = {
     }),
 
     // new webpack.BannerPlugin({banner: '#!/usr/bin/env node', raw: true}),
+
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[name].js.map',
+      sourceRoot: '/',
+      noSources: true,
+      moduleFilenameTemplate: '[absolute-resource-path]',
+      fallbackModuleFilenameTemplate: '[absolute-resource-path]',
+    }),
   ],
 
   resolve: {
