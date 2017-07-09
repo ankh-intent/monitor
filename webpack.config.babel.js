@@ -32,7 +32,7 @@ const common = {
   ],
 
   cache: !PRODUCTION,
-  bail: PRODUCTION,
+  bail : PRODUCTION,
 
   watchOptions: {
     aggregateTimeout: 200,
@@ -60,8 +60,8 @@ const common = {
   module: {
     loaders: [
       {
-        test: /\.tsx?$/,
-        loader: "awesome-typescript-loader"
+        test  : /\.tsx?$/,
+        loader: 'awesome-typescript-loader'
       },
       {
         test  : /\.json$/,
@@ -78,7 +78,7 @@ const common = {
 const client = {
   ...common,
 
-  name: 'client',
+  name  : 'client',
   target: 'web',
 
   entry : {
@@ -108,7 +108,7 @@ const client = {
       'window.jQuery': 'jquery'
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name     : 'vendor',
       minChunks: module => /node_modules/.test(module.resource),
     }),
 
@@ -140,7 +140,7 @@ const client = {
 const server = {
   ...common,
 
-  name: 'server',
+  name  : 'server',
   target: 'node',
 
   entry  : {
@@ -156,18 +156,18 @@ const server = {
     ...common.plugins,
 
     new webpack.BannerPlugin({
-      banner: `#!/usr/bin/env node\nif (process.env.ENV !== 'production') {\n\trequire('source-map-support').install();\n}`,
-      raw: true,
+      banner   : `#!/usr/bin/env node\nif (process.env.ENV !== 'production') {\n\trequire('source-map-support').install();\n}`,
+      raw      : true,
       entryOnly: false,
     }),
 
     // new webpack.BannerPlugin({banner: '#!/usr/bin/env node', raw: true}),
 
     new webpack.SourceMapDevToolPlugin({
-      filename: '[name].js.map',
-      sourceRoot: '/',
-      noSources: true,
-      moduleFilenameTemplate: '[absolute-resource-path]',
+      filename                      : '[name].js.map',
+      sourceRoot                    : '/',
+      noSources                     : true,
+      moduleFilenameTemplate        : '[absolute-resource-path]',
       fallbackModuleFilenameTemplate: '[absolute-resource-path]',
     }),
   ],
@@ -178,15 +178,15 @@ const server = {
     alias: {},
   },
 
-  node: {
+  node     : {
     __dirname: false,
   },
   externals: {  // What I want to avoid to do
-    'package.json'    : 'commonjs package.json',
-    'yargs'    : 'commonjs yargs',
-    'socket.io': 'commonjs socket.io',
-    'express': 'commonjs express',
-    'serve-index': 'commonjs serve-index',
+    'package.json'      : 'commonjs package.json',
+    'yargs'             : 'commonjs yargs',
+    'socket.io'         : 'commonjs socket.io',
+    'express'           : 'commonjs express',
+    'serve-index'       : 'commonjs serve-index',
     'source-map-support': 'commonjs source-map-support',
   },
 };
