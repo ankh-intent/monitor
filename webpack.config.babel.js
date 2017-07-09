@@ -102,6 +102,11 @@ const client = {
   plugins: [
     ...common.plugins,
 
+    new webpack.ProvidePlugin({
+      $              : 'jquery',
+      jQuery         : 'jquery',
+      'window.jQuery': 'jquery'
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: module => /node_modules/.test(module.resource),
