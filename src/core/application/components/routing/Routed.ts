@@ -42,7 +42,7 @@ export function Routed<T extends { new (...args: any[]): {} }>(constructor: T) {
   return class extends constructor {
 
     constructor(...args: any[]) {
-      super(args);
+      super(...args);
 
       // if there is a React props passed as arg[0]
       if (args.length >= 1) {
