@@ -11,7 +11,7 @@ const options: CoreOptions = {
   server: {
     port: 3000,
     web: {
-      root: path.resolve(path.join(__dirname, '../src/core/application/web/'))
+      root: path.resolve(path.join(__dirname, '../core/application/web/'))
     },
   },
 };

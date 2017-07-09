@@ -22,7 +22,7 @@ import { Core } from './Core';
   if (options.emit.options) {
     core.logger.log(Logger.INFO, util.inspect(options, {depth: null}));
 
-    process.exit(0);
+    // process.exit(0);
   }
 
   core.and((event) => {

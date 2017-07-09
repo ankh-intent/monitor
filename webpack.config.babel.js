@@ -27,7 +27,7 @@ const common = {
     }),
     ...(PRODUCTION ? [
       new webpack.optimize.OccurenceOrderPlugin(),
-      new webpack.optimize.AggressiveMergingPlugin(),
+      // new webpack.optimize.AggressiveMergingPlugin(),
     ] : []),
   ],
 
@@ -94,6 +94,38 @@ const client = {
       'react-dom': 'react-lite',
     },
   },
+
+  plugins: [
+    ...common.plugins,
+
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: module => /node_modules/.test(module.resource),
+    }),
+
+    ...PRODUCTION ? [
+      // new webpack.optimize.ModuleConcatenationPlugin(),
+      //
+      // // Minimize all JavaScript output of chunks
+      // // https://github.com/mishoo/UglifyJS2#compressor-options
+      // new webpack.optimize.UglifyJsPlugin({
+      //   sourceMap: true,
+      //   compress: {
+      //     screw_ie8: true, // React doesn't support IE8
+      //     warnings: isVerbose,
+      //     unused: true,
+      //     dead_code: true,
+      //   },
+      //   mangle: {
+      //     screw_ie8: true,
+      //   },
+      //   output: {
+      //     comments: false,
+      //     screw_ie8: true,
+      //   },
+      // }),
+    ] : []
+  ],
 };
 
 const server = {
@@ -113,6 +145,7 @@ const server = {
   },
   plugins: [
     ...common.plugins,
+
     new webpack.BannerPlugin({
       banner: `#!/usr/bin/env node\nif (process.env.ENV !== 'production') {\n\trequire('source-map-support').install();\n}`,
       raw: true,
@@ -129,14 +162,8 @@ const server = {
   },
 
   node: {
-    console: false,
-    global: false,
-    process: false,
-    Buffer: false,
-    __filename: false,
-    __dirname: false,
+    __dirname: true,
   },
-
   externals: {  // What I want to avoid to do
     'package.json'    : 'commonjs package.json',
     'yargs'    : 'commonjs yargs',
