@@ -1,13 +1,39 @@
 
 import * as React from 'react';
-import { Routed } from '../routing/Routed';
 import { inject, observer } from 'mobx-react';
+import { Route, RouteComponentProps } from 'react-router';
+import { NodeStoreInterface, Node } from '../stores/NodeStore';
+import { NavLink } from 'react-router-dom';
+import { ShowPageRoutes } from './ShowPage';
+import { NodesPageRoutes } from './NodesPage';
+import { EditPageRoutes } from './EditPage';
 
-export interface NodeStoreInterface {
-  all(): any[];
+export interface NodeListItemProps {
+  node: Node;
 }
 
-export interface ListPageProps {
+export class NodeListItem extends React.Component<NodeListItemProps, {}> {
+
+  public render() {
+    return (
+      <span>
+        <span>
+          Item:&nbsp;
+          <NavLink to={ ShowPageRoutes.path(this.props.node) }>
+            { this.props.node.identifier }
+          </NavLink>
+        </span>
+
+
+        <NavLink className="pull-right" to={ EditPageRoutes.path(this.props.node) }>
+          Edit
+        </NavLink>
+      </span>
+    );
+  }
+}
+
+export interface ListPageProps extends RouteComponentProps<any> {
   nodes?: NodeStoreInterface;
 }
 
@@ -16,13 +42,12 @@ export interface ListPageState {
 
 @inject('nodes')
 @observer
-@Routed
 export class ListPage extends React.Component<ListPageProps, ListPageState> {
   public render() {
     return (
       <ul>
-        { this.props.nodes.all().map((node) => (
-          <li>
+        { this.props.nodes.all.map((node) => (
+          <li key={ node.identifier }>
             <NodeListItem node={node} />
           </li>
         )) }
@@ -31,14 +56,17 @@ export class ListPage extends React.Component<ListPageProps, ListPageState> {
   }
 }
 
-export interface NodeListItemProps {
-  node: any;
-}
-
-export class NodeListItem extends React.Component<NodeListItemProps, {}> {
-  public render() {
-    return (
-      <span>Item: { JSON.stringify(this.props.node) }</span>
+export const ListPageRoutes = {
+  path(append?: string) {
+    return NodesPageRoutes.path(
+      append
+        ? `list/${append}`
+        : `list`
     );
+  },
+  routes() {
+    return this._routes || (this._routes = (
+      <Route path={ this.path() } exact component={ ListPage } />
+    ));
   }
-}
+};

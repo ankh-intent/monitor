@@ -3,8 +3,10 @@ import * as React from 'react';
 import { Route } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
-import { Routed, RoutedLocation, RoutedMatch, RoutedHistory, Match } from '../routing/Routed';
-import { ListPage } from './ListPage';
+import { Redirect } from 'react-router';
+import { ListPageRoutes } from './ListPage';
+import { ShowPageRoutes } from './ShowPage';
+import { EditPageRoutes } from './EditPage';
 
 interface NodesPageParams {
 }
@@ -16,23 +18,7 @@ interface NodesPageState {
 }
 
 @observer
-@Routed
 export class NodesPage extends React.Component<NodesPageProps, NodesPageState> {
-  static PATH = '/nodes';
-
-  static path() {
-    return this.PATH;
-  }
-
-  @RoutedMatch
-  protected match: Match<NodesPageParams>;
-
-  @RoutedLocation
-  protected location: Location;
-
-  @RoutedHistory
-  protected history: History;
-
   componentWillReceiveProps(next) {
     this.setState({
     });
@@ -57,8 +43,23 @@ export class NodesPage extends React.Component<NodesPageProps, NodesPageState> {
   }
 }
 
-export const NodesPageRoutes = (
-  <Route path={ NodesPage.path() } component={ NodesPage as any }>
-    <Route exact path={ NodesPage.path() } component={ ListPage as any } />
-  </Route>
-);
+export const NodesPageRoutes = {
+  path(append?: string) {
+    return (
+      append
+        ? `/nodes/${append}`
+        : `/nodes`
+    );
+  },
+  routes() {
+    return this._routes || (this._routes = (
+      <NodesPage>
+        <Route exact path={ this.path() } render={ () => <Redirect to={ ListPageRoutes.path() } /> } />
+
+        { ListPageRoutes.routes() }
+        { ShowPageRoutes.routes() }
+        { EditPageRoutes.routes() }
+      </NodesPage>
+    ));
+  }
+};

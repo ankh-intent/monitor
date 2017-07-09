@@ -1,59 +1,42 @@
 
 import * as React from 'react';
 import * as io from 'socket.io-client';
-import { HashRouter, Route } from 'react-router-dom';
-import { observable } from 'mobx';
+import { HashRouter as Router } from 'react-router-dom';
 import { Provider } from 'mobx-react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, Switch } from 'react-router';
 
 import { NodesPageRoutes } from './nodes/NodesPage';
 import { LocationProps, Menu, Navbar } from './NavBar';
-import { NodeStoreInterface } from './nodes/ListPage';
+import { NodeStore, Node, NodeStoreInterface } from './stores/NodeStore';
+import { observable } from 'mobx';
 
 export class AppRouter extends React.Component<{}, {}> {
   public render() {
     return (
-      <HashRouter>
-        <Route component={ App }>
-          { NodesPageRoutes }
-        </Route>
-      </HashRouter>
+      <Router>
+        <App>
+          <Switch>
+            { NodesPageRoutes.routes() }
+          </Switch>
+
+        </App>
+      </Router>
     );
   }
 }
 
-class Node {
-  @observable data = observable.map();
-
-  constructor(data = {}) {
-    this.data.merge(data);
-  }
-}
-
-class Nodes implements NodeStoreInterface {
-  @observable
-  private store: any[] = [];
-
-  public all(): any[] {
-    return this.store;
-  }
-
-  public push(node: any): number {
-    return this.store.push(node);
-  }
-}
-
-export class App extends React.Component<RouteComponentProps<any>, {}> {
+export class App extends React.Component<{}, {}> {
   private client: any;
+
   private stores: {
-    nodes: Nodes,
+    nodes: NodeStoreInterface,
   };
 
   public constructor(props: any) {
     super(props);
 
     this.stores = {
-      nodes: new Nodes(),
+      nodes: new NodeStore(),
     };
 
     this.client = io();
@@ -62,17 +45,14 @@ export class App extends React.Component<RouteComponentProps<any>, {}> {
   public componentDidMount() {
     // this.client.emit('nodes', (nodes) => {
 
-    let nodes = [
-      {name: 'node1'},
-      {name: 'node2'},
-      {name: 'node3'},
-    ];
-
-    for (let node of nodes) {
-      this.stores.nodes.push(new Node(
-        node
-      ));
-    }
+    this.stores.nodes.push(
+      ([
+        {identifier: 'node1'},
+        {identifier: 'node2'},
+        {identifier: 'node3'},
+      ])
+        .map((data) => new Node(data))
+    );
     // });
   }
 
@@ -83,8 +63,8 @@ export class App extends React.Component<RouteComponentProps<any>, {}> {
       children: [
         {
           title: 'Nodes',
-          link: '/nodes',
-        }
+          link: NodesPageRoutes.path(),
+        },
       ],
     };
   }
@@ -108,7 +88,7 @@ export class App extends React.Component<RouteComponentProps<any>, {}> {
             <div className="col-lg-12">
               { React.Children.map(
                 this.props.children,
-                (child) => React.cloneElement(child as any, childrenProps)
+                (child) => React.cloneElement(child as any, this.props)
               ) }
             </div>
           </div>

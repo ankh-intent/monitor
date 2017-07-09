@@ -10,7 +10,7 @@ const env = PRODUCTION ? 'production' : 'development';
 const common = {
   entry : {},
   output: {
-    publicPath  : '/intent',
+    publicPath  : '/static/',
     sourcePrefix: '  ',
     filename    : PRODUCTION ? '[name].js' : '[name].js?[hash]',
   },
@@ -152,7 +152,7 @@ const client = {
         loader: 'url-loader?name=sounds/[name].[ext]',
       }, {
         test  : /\.(eot|ttf|svg|woff|woff2)$/,
-        loader: 'file-loader?name=../styles/fonts/[name].[ext]',
+        loader: 'file-loader?name=styles/fonts/[name].[ext]',
       },
     ],
   },

@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { NavLink, RouteComponentProps } from 'react-router-dom';
 
 export interface PageLink {
   title: string;
@@ -30,23 +30,38 @@ export class Navbar extends React.Component<LocationProps, {}> {
               <span className="icon-bar" />
               <span className="icon-bar" />
             </button>
-            <Link to={ menu.link } className="navbar-brand">
+            <NavLink to={ menu.link } className="navbar-brand">
               { menu.title }
-            </Link>
+            </NavLink>
 
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             { menu.children ? (
-              <ul className="nav navbar-nav navbar-right">
-                { menu.children.map((child) =>
-                  <li><Link to={ child.link }>{ child.title }</Link></li>
-                ) }
-              </ul>
+              <div>
+                { this.menu(menu.children, 'nav navbar-nav navbar-right') }
+              </div>
             ) : null }
           </div>
         </div>
       </nav>
     );
+  }
+
+  protected menu(items: Menu[], className: string = null) {
+    return (
+      <ul className={ className }>
+        { items.map((child) =>
+          <li>
+            <NavLink to={ child.link }>{ child.title }</NavLink>
+            { child.children ? (
+              <ul>
+                { this.menu(child.children) }
+              </ul>
+            ) : null}
+          </li>
+        ) }
+      </ul>
+    )
   }
 }
