@@ -15,6 +15,7 @@ export abstract class BaseCoreEvent<T> implements CoreEvent<T> {
   public parent: CoreEvent<any>;
   public bubble: boolean;
 
+  //noinspection TypeScriptAbstractClassConstructorCanBeMadeProtected
   public constructor(data: T, parent?: CoreEvent<any>) {
     this.data = data;
     this.type = (<typeof BaseCoreEvent>this.constructor).type();
@@ -27,11 +28,25 @@ export abstract class BaseCoreEvent<T> implements CoreEvent<T> {
   }
 
   public hasParent(event: CoreEvent<any>): CoreEvent<any> {
-    let parent = this.parent;
+    let parent: CoreEvent<any> = this;
 
     while (parent) {
       if (parent === event) {
         return this;
+      }
+
+      parent = parent.parent;
+    }
+
+    return null;
+  }
+
+  public lookup(type: string): CoreEvent<any> {
+    let parent: CoreEvent<any> = this;
+
+    while (parent) {
+      if (parent.type === type) {
+        return this.parent;
       }
 
       parent = parent.parent;
@@ -48,7 +63,6 @@ export abstract class BaseCoreEvent<T> implements CoreEvent<T> {
 }
 
 export interface CoreEventConsumer<T, E extends CoreEvent<T>> {
-
-  consume(event: E): CoreEvent<any>|void;
-
+  supports(event: CoreEvent<any>): boolean;
+  consume(event: E): CoreEvent<any> | void;
 }

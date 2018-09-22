@@ -1,4 +1,3 @@
-
 import defaults from './config/defaults';
 
 const PRODUCTION = "production";

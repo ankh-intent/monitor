@@ -1,6 +1,6 @@
-
 import * as util from 'util';
 import config from './config';
+
 import { Logger } from './intent-utils/Logger';
 import { OptionsProvider } from './OptionsProvider';
 import { StatEvent } from './core/flow/events/StatEvent';
@@ -22,7 +22,7 @@ import { Core } from './Core';
   if (options.emit.options) {
     core.logger.log(Logger.INFO, util.inspect(options, {depth: null}));
 
-    process.exit(0);
+    // process.exit(0);
   }
 
   core.and((event) => {

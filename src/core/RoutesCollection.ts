@@ -1,4 +1,3 @@
-
 import { ServerOptions } from './ServerOptions';
 
 export class RoutesCollection<O extends ServerOptions> {

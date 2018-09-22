@@ -2,7 +2,6 @@ import { Container } from '../intent-utils/Container';
 
 export interface ClientHub {
   event(client: Client, data): void;
-
   disconnect(client: Client): void;
 }
 
@@ -11,7 +10,7 @@ export interface ClientFactory {
 }
 
 export class Client {
-  private server: ClientHub;
+  private readonly server: ClientHub;
   private socket: any;
 
   public constructor(server: ClientHub, socket, namespaces: string[] = []) {

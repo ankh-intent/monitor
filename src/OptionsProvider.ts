@@ -1,10 +1,9 @@
-
 import { AbstractOptionsProvider } from './intent-app/AbstractOptionsProvider';
 import { Core, CoreOptions, EmitOptions } from './Core';
 import { ServerOptions } from './core/ServerOptions';
 
 export class OptionsProvider extends AbstractOptionsProvider<CoreOptions> {
-  private _defaults: CoreOptions;
+  private readonly _defaults: CoreOptions;
 
   public constructor(defaults: CoreOptions) {
     super();

@@ -1,10 +1,14 @@
 
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.css'
+import './web/styles/main.css'
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { App } from './components/App';
+import { AppRouter } from './components/App';
 
 ReactDOM.render(
-  <App />,
+  <AppRouter />,
   document.getElementById('intent-app')
 );

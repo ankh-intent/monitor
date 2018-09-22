@@ -1,4 +1,3 @@
-
 import { CoreOptions } from './Core';
 
 export class OptionsResolver {

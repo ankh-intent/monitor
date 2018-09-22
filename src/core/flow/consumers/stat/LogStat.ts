@@ -1,4 +1,3 @@
-
 import { BaseStat } from './BaseStat';
 import { Logger } from '../../../../intent-utils/Logger';
 import { CoreOptions } from '../../../../Core';

@@ -1,7 +1,8 @@
-
 import * as path from 'path';
 
 import { CoreOptions } from '../Core';
+
+const root = path.resolve(path.join(__dirname, '..'));
 
 const options: CoreOptions = {
   emit: {
@@ -11,7 +12,7 @@ const options: CoreOptions = {
   server: {
     port: 3000,
     web: {
-      root: path.resolve(path.join(__dirname, '../src/core/application/web/'))
+      root: path.resolve(path.join(root, 'src/core/application/web/')),
     },
   },
 };
