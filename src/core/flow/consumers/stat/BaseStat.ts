@@ -1,4 +1,3 @@
-
 import { CoreOptions } from '../../../../Core';
 import { StatEvent } from '../../events/StatEvent';
 

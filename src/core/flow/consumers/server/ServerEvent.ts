@@ -1,4 +1,3 @@
-
 import { BaseCoreEvent } from '../../CoreEvent';
 import { Server } from './intent/Server';
 

@@ -1,4 +1,3 @@
-
 import { CoreEvent } from '../../CoreEvent';
 import { AbstractConsumer } from '../../AbstractConsumer';
 
@@ -9,8 +8,8 @@ import { Logger } from '../../../../intent-utils/Logger';
 import { LogStat } from './LogStat';
 
 export class StatConsumer extends AbstractConsumer<StatEvent, any>{
-  private logger: Logger;
-  private processors: {
+  private readonly logger: Logger;
+  private readonly processors: {
     log: LogStat;
   };
 

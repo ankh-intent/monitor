@@ -1,4 +1,3 @@
-
 import { Container } from '../../../../../intent-utils/Container';
 import { Client as BaseClient } from '../../../../Client';
 

@@ -1,4 +1,3 @@
-
 import * as index from 'serve-index';
 
 import { RoutesCollection as BaseRoutesCollection } from '../../../../RoutesCollection';

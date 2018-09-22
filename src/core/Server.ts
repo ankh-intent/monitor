@@ -1,4 +1,3 @@
-
 import * as http from 'http';
 import * as express from 'express';
 import * as socket from 'socket.io';
@@ -12,9 +11,9 @@ export class Server<O extends ServerOptions> extends Eventable implements Client
   static READY = 'ready';
   static SHUTDOWN = 'shutdown';
 
+  private readonly factory: ClientFactory;
+  private readonly options: O;
   protected app: any;
-  private factory: ClientFactory;
-  private options: O;
   private server: http.Server;
   private clients: Client[] = [];
   private routes: RoutesCollection<O>;
@@ -111,10 +110,8 @@ export class Server<O extends ServerOptions> extends Eventable implements Client
   }
 
   public disconnect(client: Client) {
-
   }
 
   public event(client: Client, data) {
-
   }
 }

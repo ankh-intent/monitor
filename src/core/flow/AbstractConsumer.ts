@@ -1,4 +1,3 @@
-
 import { CoreEvent, CoreEventConsumer } from './CoreEvent';
 import { ErrorEvent } from './events/ErrorEvent';
 import { CoreEventBus } from './CoreEventBus';
@@ -9,6 +8,7 @@ export abstract class AbstractConsumer<E extends CoreEvent<T>, T> implements Cor
   public abstract supports(event: CoreEvent<any>): boolean;
   public abstract process(event: E): CoreEvent<any>|void;
 
+  //noinspection TypeScriptAbstractClassConstructorCanBeMadeProtected
   public constructor(bus: CoreEventBus<T, E>) {
     this.bus = bus;
   }

@@ -1,4 +1,3 @@
-
 import { BaseCoreEvent, CoreEvent } from '../CoreEvent';
 
 export interface StatEventProps {

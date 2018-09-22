@@ -15,6 +15,7 @@ export abstract class BaseCoreEvent<T> implements CoreEvent<T> {
   public parent: CoreEvent<any>;
   public bubble: boolean;
 
+  //noinspection TypeScriptAbstractClassConstructorCanBeMadeProtected
   public constructor(data: T, parent?: CoreEvent<any>) {
     this.data = data;
     this.type = (<typeof BaseCoreEvent>this.constructor).type();
@@ -62,8 +63,6 @@ export abstract class BaseCoreEvent<T> implements CoreEvent<T> {
 }
 
 export interface CoreEventConsumer<T, E extends CoreEvent<T>> {
-
   supports(event: CoreEvent<any>): boolean;
   consume(event: E): CoreEvent<any> | void;
-
 }

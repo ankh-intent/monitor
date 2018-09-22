@@ -1,4 +1,3 @@
-
 import { Logger } from '../intent-utils/Logger';
 import { BaseCoreEvent } from './flow/CoreEvent';
 

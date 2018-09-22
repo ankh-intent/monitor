@@ -1,4 +1,3 @@
-
 import { CoreEvent, CoreEventConsumer } from './CoreEvent';
 import { StatEvent } from './events/StatEvent';
 
@@ -62,9 +61,7 @@ export class CoreEventBus<T = any, E extends CoreEvent<T> = CoreEvent<T>, C exte
     return event;
   }
 
-  public stat(data: any, parent?: CoreEvent<any>): CoreEvent<any> {
-    return this.emit(new StatEvent({
-      stat: data,
-    }, parent));
+  public stat(stat: any, parent?: CoreEvent<any>): CoreEvent<any> {
+    return this.emit(new StatEvent({ stat }, parent));
   }
 }

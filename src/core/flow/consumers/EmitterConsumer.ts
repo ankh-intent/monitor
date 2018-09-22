@@ -1,4 +1,3 @@
-
 import { CoreEvent } from '../CoreEvent';
 import { AbstractConsumer } from '../AbstractConsumer';
 

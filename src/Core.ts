@@ -28,11 +28,11 @@ export interface CoreOptions {
 }
 
 export class Core extends Emitter<(event: CoreEvent<any>) => any> {
-  public logger: Logger;
+  public readonly logger: Logger;
 
-  private options: OptionsResolver;
-  private events: CoreEventBus;
-  private monitor: EventChainMonitor<CoreEvent<any>>;
+  private readonly options: OptionsResolver;
+  private readonly events: CoreEventBus;
+  private readonly monitor: EventChainMonitor<CoreEvent<any>>;
 
   public constructor() {
     super();

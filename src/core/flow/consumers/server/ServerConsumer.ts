@@ -1,4 +1,3 @@
-
 import { ReadyEvent } from '../../events/ReadyEvent';
 import { AbstractConsumer } from '../../AbstractConsumer';
 import { Logger } from '../../../../intent-utils/Logger';

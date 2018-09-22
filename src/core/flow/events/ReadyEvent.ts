@@ -1,4 +1,3 @@
-
 import { BaseCoreEvent } from '../CoreEvent';
 import { EventChainMonitoringData } from '../consumers/EventChainMonitor';
 

@@ -1,10 +1,10 @@
-
 import yargs from 'yargs';
 
 export abstract class AbstractOptionsProvider<O> {
   private yargs;
   private _argv;
 
+  //noinspection TypeScriptAbstractClassConstructorCanBeMadeProtected
   public constructor() {
     this.yargs = yargs;
   }
